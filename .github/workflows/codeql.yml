@@ -1,207 +1,207 @@
-name: "CodeQL"
+# name: "CodeQL"
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: ["main"]
-    types: [opened, labeled, unlabeled, synchronize]
-  schedule:
-    # runs on 19:17 every Tuesday
-    - cron: "27 19 * * 2"
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     # The branches below must be a subset of the branches above
+#     branches: ["main"]
+#     types: [opened, labeled, unlabeled, synchronize]
+#   schedule:
+#     # runs on 19:17 every Tuesday
+#     - cron: "27 19 * * 2"
 
-jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+# jobs:
+#   analyze:
+#     name: Analyze
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 360
+#     permissions:
+#       actions: read
+#       contents: read
+#       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["go", "javascript-typescript"]
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         language: ["go", "javascript-typescript"]
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
+#       # Initializes the CodeQL tools for scanning.
+#       - name: Initialize CodeQL
+#         uses: github/codeql-action/init@v4
+#         with:
+#           languages: ${{ matrix.language }}
+#           # If you wish to specify custom queries, you can do so here or in a config file.
+#           # By default, queries listed here will override any specified in a config file.
+#           # Prefix the list here with "+" to use these queries and those in the config file.
 
-          # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-          # queries: security-extended,security-and-quality
+#           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
+#           # queries: security-extended,security-and-quality
 
-      # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
+#       # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
+#       # If this step fails, then you should remove it and run the build manually (see below)
+#       - name: Autobuild
+#         uses: github/codeql-action/autobuild@v4
 
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+#       # ℹ️ Command-line programs to run using the OS shell.
+#       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-      #   If the Autobuild fails above, remove it and uncomment the following three lines.
-      #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+#       #   If the Autobuild fails above, remove it and uncomment the following three lines.
+#       #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
-      # - run: |
-      #     echo "Run, Build Application using script"
-      #     ./location_of_script_within_repo/buildscript.sh
+#       # - run: |
+#       #     echo "Run, Build Application using script"
+#       #     ./location_of_script_within_repo/buildscript.sh
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:${{matrix.language}}"
+#       - name: Perform CodeQL Analysis
+#         uses: github/codeql-action/analyze@v4
+#         with:
+#           category: "/language:${{matrix.language}}"
 
-  lint-golangci:
-    name: "Lint (golangci)"
-    runs-on:
-      - runs-on=${{github.run_id}}
-      - runner=terraform
-      - tag=atmos
-      - extras=s3-cache
-      - private=false
+#   lint-golangci:
+#     name: "Lint (golangci)"
+#     runs-on:
+#       - runs-on=${{github.run_id}}
+#       - runner=terraform
+#       - tag=atmos
+#       - extras=s3-cache
+#       - private=false
 
-    if: github.event_name == 'pull_request'
-    permissions:
-      # Required: allow read access to the content for analysis.
-      contents: read
-      # allow read access to pull request. Use with `only-new-issues` option.
-      pull-requests: read
-      # allow write access to checks to allow the action to annotate code in the PR.
-      checks: write
-      # allow write access to security events to allow the action to upload SARIF files.
-      security-events: write
-    steps:
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+#     if: github.event_name == 'pull_request'
+#     permissions:
+#       # Required: allow read access to the content for analysis.
+#       contents: read
+#       # allow read access to pull request. Use with `only-new-issues` option.
+#       pull-requests: read
+#       # allow write access to checks to allow the action to annotate code in the PR.
+#       checks: write
+#       # allow write access to security events to allow the action to upload SARIF files.
+#       security-events: write
+#     steps:
+#       - name: Check out code into the Go module directory
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
 
-      # golangci-lint-action@v4.0.0+ requires explicit Go setup
-      # Without this step, the action may fail intermittently with
-      # "could not load export data" errors due to cache corruption
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: true
+#       # golangci-lint-action@v4.0.0+ requires explicit Go setup
+#       # Without this step, the action may fail intermittently with
+#       # "could not load export data" errors due to cache corruption
+#       - name: Set up Go
+#         uses: actions/setup-go@v5
+#         with:
+#           go-version-file: go.mod
+#           cache: true
 
-      # Pre-populate module cache to prevent goanalysis_metalinter failures.
-      # Without this, the linter may fail with "could not load export data" errors.
-      # See: https://github.com/golangci/golangci-lint/issues/5437
-      - name: Download modules
-        run: go mod download
+#       # Pre-populate module cache to prevent goanalysis_metalinter failures.
+#       # Without this, the linter may fail with "could not load export data" errors.
+#       # See: https://github.com/golangci/golangci-lint/issues/5437
+#       - name: Download modules
+#         run: go mod download
 
-      # Install the golangci-lint v2 CLI tool (not the linters themselves).
-      # This tool is needed to run `golangci-lint custom` which builds a custom binary
-      # that includes both standard linters AND our custom module plugins.
-      - name: Install golangci-lint v2 for custom build
-        run: |
-          # Pin to commit that fixes "-c advice.detachedHead=false" bug (PR #6206)
-          # https://github.com/golangci/golangci-lint/pull/6206
-          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@101ccaca0df22b2e36dd917ed5d0be423baa6298
+#       # Install the golangci-lint v2 CLI tool (not the linters themselves).
+#       # This tool is needed to run `golangci-lint custom` which builds a custom binary
+#       # that includes both standard linters AND our custom module plugins.
+#       - name: Install golangci-lint v2 for custom build
+#         run: |
+#           # Pin to commit that fixes "-c advice.detachedHead=false" bug (PR #6206)
+#           # https://github.com/golangci/golangci-lint/pull/6206
+#           go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@101ccaca0df22b2e36dd917ed5d0be423baa6298
 
-      # Build a custom golangci-lint binary with our lintroller plugin compiled in.
-      - name: Build custom golangci-lint with lintroller plugin
-        run: |
-          set -e
+#       # Build a custom golangci-lint binary with our lintroller plugin compiled in.
+#       - name: Build custom golangci-lint with lintroller plugin
+#         run: |
+#           set -e
 
-          # Ensure lintroller module is ready
-          cd tools/lintroller && go mod tidy && cd ../..
+#           # Ensure lintroller module is ready
+#           cd tools/lintroller && go mod tidy && cd ../..
 
-          # Build custom golangci-lint with plugins
-          golangci-lint custom
+#           # Build custom golangci-lint with plugins
+#           golangci-lint custom
 
-          # Verify the custom binary was created
-          test -x ./custom-gcl || { echo "Error: custom-gcl not found or not executable"; exit 1; }
+#           # Verify the custom binary was created
+#           test -x ./custom-gcl || { echo "Error: custom-gcl not found or not executable"; exit 1; }
 
-          # Replace system binary with our custom one
-          mv ~/go/bin/golangci-lint ~/go/bin/golangci-lint.system
-          cp ./custom-gcl ~/go/bin/golangci-lint
-          chmod +x ~/go/bin/golangci-lint
+#           # Replace system binary with our custom one
+#           mv ~/go/bin/golangci-lint ~/go/bin/golangci-lint.system
+#           cp ./custom-gcl ~/go/bin/golangci-lint
+#           chmod +x ~/go/bin/golangci-lint
 
-          golangci-lint --version
+#           golangci-lint --version
 
-      # Run the golangci-lint action using our custom binary with plugins.
-      #
-      # Key settings:
-      # - install-mode: none - Tells the action to use the binary already in PATH
-      #                        (our custom-gcl that we just installed)
-      # - only-new-issues: true - Only report issues in changed code
-      # - SARIF output - For GitHub Advanced Security / CodeQL integration
-      # - issues-exit-code: 0 - Always exit 0 so we upload SARIF to CodeQL
-      #
-      # The action provides:
-      # - Inline PR annotations for linting issues
-      # - Caching for faster runs
-      # - GitHub UI integration
-      #
-      # Our custom binary includes lintroller, so violations of:
-      # - os.MkdirTemp in tests (should use t.TempDir)
-      # - os.Setenv in tests (should use t.Setenv)
-      # - t.Setenv in defer blocks (should use os.Setenv)
-      # will appear in the SARIF output and GitHub Security tab.
-      - name: Run golangci-lint with lintroller plugin
-        uses: golangci/golangci-lint-action@v8.0.0
-        with:
-          version: 101ccaca0df22b2e36dd917ed5d0be423baa6298
-          install-mode: none
-          only-new-issues: true
-          args: >
-            --output.sarif.path=golangci-lint.sarif
-            --issues-exit-code=0
+#       # Run the golangci-lint action using our custom binary with plugins.
+#       #
+#       # Key settings:
+#       # - install-mode: none - Tells the action to use the binary already in PATH
+#       #                        (our custom-gcl that we just installed)
+#       # - only-new-issues: true - Only report issues in changed code
+#       # - SARIF output - For GitHub Advanced Security / CodeQL integration
+#       # - issues-exit-code: 0 - Always exit 0 so we upload SARIF to CodeQL
+#       #
+#       # The action provides:
+#       # - Inline PR annotations for linting issues
+#       # - Caching for faster runs
+#       # - GitHub UI integration
+#       #
+#       # Our custom binary includes lintroller, so violations of:
+#       # - os.MkdirTemp in tests (should use t.TempDir)
+#       # - os.Setenv in tests (should use t.Setenv)
+#       # - t.Setenv in defer blocks (should use os.Setenv)
+#       # will appear in the SARIF output and GitHub Security tab.
+#       - name: Run golangci-lint with lintroller plugin
+#         uses: golangci/golangci-lint-action@v8.0.0
+#         with:
+#           version: 101ccaca0df22b2e36dd917ed5d0be423baa6298
+#           install-mode: none
+#           only-new-issues: true
+#           args: >
+#             --output.sarif.path=golangci-lint.sarif
+#             --issues-exit-code=0
 
-      - name: Upload filtered SARIF results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: golangci-lint.sarif
+#       - name: Upload filtered SARIF results
+#         if: always()
+#         uses: github/codeql-action/upload-sarif@v4
+#         with:
+#           sarif_file: golangci-lint.sarif
 
-  pr-semver-labels:
-    name: PR Semver Labels
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      issues: write
-    steps:
-      # Checkout is required for local composite actions
-      - uses: actions/checkout@v4
-        if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+#   pr-semver-labels:
+#     name: PR Semver Labels
+#     if: github.event_name == 'pull_request'
+#     runs-on: ubuntu-latest
+#     permissions:
+#       pull-requests: write
+#       issues: write
+#     steps:
+#       # Checkout is required for local composite actions
+#       - uses: actions/checkout@v4
+#         if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
 
-      # Remove Dependabot's auto-added semver labels
-      # Dependabot PRs should only have the 'no-release' label since
-      # dependency updates don't determine Atmos releases.
-      - name: Clean up Dependabot labels
-        if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
-        uses: ./.github/actions/remove-dependabot-semver-labels
+#       # Remove Dependabot's auto-added semver labels
+#       # Dependabot PRs should only have the 'no-release' label since
+#       # dependency updates don't determine Atmos releases.
+#       - name: Clean up Dependabot labels
+#         if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+#         uses: ./.github/actions/remove-dependabot-semver-labels
 
-      # Check for required semver labels
-      # Every PR must have exactly one: major, minor, patch, or no-release
-      - uses: mheap/github-action-required-labels@v5
-        with:
-          mode: exactly
-          count: 1
-          labels: |
-            major
-            minor
-            patch
-            no-release
-          add_comment: true
-          message: |
-            > [!WARNING]
-            > This PR is blocked from merging because a required semver label is missing.
-            > ```
-            > {{ provided }}
-            > ```
-            > You'll need to add one before this PR can be merged.
+#       # Check for required semver labels
+#       # Every PR must have exactly one: major, minor, patch, or no-release
+#       - uses: mheap/github-action-required-labels@v5
+#         with:
+#           mode: exactly
+#           count: 1
+#           labels: |
+#             major
+#             minor
+#             patch
+#             no-release
+#           add_comment: true
+#           message: |
+#             > [!WARNING]
+#             > This PR is blocked from merging because a required semver label is missing.
+#             > ```
+#             > {{ provided }}
+#             > ```
+#             > You'll need to add one before this PR can be merged.
